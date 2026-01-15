@@ -21,7 +21,6 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'back/package-lock.json'
 
-      - run: cd back && npm ci
+      - run: cd back && npm install --no-audit --no-fund
       - run: cd back && npm run lint

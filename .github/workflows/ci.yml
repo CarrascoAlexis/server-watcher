@@ -57,3 +57,39 @@ jobs:
         with:
           directory: ./back/coverage
           fail_ci_if_error: false
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test  # Attend que le job 'test' soit terminé avec succès
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: back/package-lock.json
+
+      - name: Install dependencies
+        working-directory: back
+        run: npm ci --no-audit --no-fund
+
+      - name: Security audit
+        working-directory: back
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Check server starts
+        working-directory: back
+        run: |
+          timeout 10s node server.js &
+          SERVER_PID=$!
+          sleep 3
+          if ps -p $SERVER_PID > /dev/null; then
+            echo "✓ Server started successfully"
+            kill $SERVER_PID
+            exit 0
+          else
+            echo "✗ Server failed to start"
+            exit 1
+          fi

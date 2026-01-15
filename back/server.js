@@ -17,7 +17,7 @@ app.use(express.json());
 routes(app);
 
 // Error handling
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal server error' });
 });
@@ -25,5 +25,5 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = config.port;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} (${config.nodeEnv})`);
+  console.warn(`Server running on port ${PORT} (${config.nodeEnv})`);
 });

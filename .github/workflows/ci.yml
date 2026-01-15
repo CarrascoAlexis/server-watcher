@@ -58,6 +58,16 @@ jobs:
           directory: ./back/coverage
           fail_ci_if_error: false
 
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build  # Build l'app avant de construire l'image Docker
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend Docker image
+        run: docker build -t server-watcher-back:ci ./back
+
   build:
     runs-on: ubuntu-latest
     needs: test  # Attend que le job 'test' soit terminé avec succès

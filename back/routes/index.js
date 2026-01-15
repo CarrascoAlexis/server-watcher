@@ -1,4 +1,4 @@
-const authRoutes = require('../auth/routes');
+const authRoutes = require('./auth.routes');
 
 module.exports = (app) => {
   app.get('/api/health', (req, res) => {

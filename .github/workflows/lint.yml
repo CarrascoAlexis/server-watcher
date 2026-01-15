@@ -20,11 +20,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: ''
+          cache: 'npm'
+          cache-dependency-path: back/package-lock.json
 
       - name: Install dependencies
         working-directory: back
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Run lint
         working-directory: back

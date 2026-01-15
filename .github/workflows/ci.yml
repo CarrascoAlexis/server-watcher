@@ -1,19 +1,39 @@
-name: Test
+name: CI
 
 on:
   push:
     branches: [main, dev, feature/**]
     paths:
       - 'back/**'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches: [main, dev]
     paths:
       - 'back/**'
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: back/package-lock.json
+
+      - name: Install dependencies
+        working-directory: back
+        run: npm ci --no-audit --no-fund
+
+      - name: Run lint
+        working-directory: back
+        run: npm run lint
+
   test:
     runs-on: ubuntu-latest
+    needs: lint  # Attend que le job 'lint' soit terminé avec succès
 
     steps:
       - uses: actions/checkout@v4
